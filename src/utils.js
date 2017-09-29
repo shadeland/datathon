@@ -51,5 +51,24 @@ module.exports = {
    			return response.data
 			// return response.data.items
 		})
+	},
+	fetchRandom : function(){
+		
+		// var config = {
+		// 	headers: {
+		// 		'Content-Type': 'application/x-www-form-urlencoded',
+		// 		'Access-Control-Allow-Origin': 'http://localhost:3000',
+		// 		'Access-Control-Allow-Credentials': 'true'
+		// 	},
+       
+  //  		};
+   
+   		// const encodedURI = window.encodeURI('https://unpkg.com/us-atlas@1/us/10m.json');
+   		const encodedURI = window.encodeURI('http://api.datathon.truservice.info/randomLocs');
+   		return axios.get(encodedURI).then((response) => {
+
+   			return response.data
+			// return response.data.items
+		})
 	}
 }
