@@ -35,7 +35,7 @@ def search():
     import json
     fieldFilters = [json.loads(x) for x in request.args['fieldFilters'].split(";")]
     requestedColumns = request.args['requestedColumns'].split(",")
-    query = 'SELECT ' + ', '.join(requestedColumns) + ' FROM opoid_dashboard_with_age '
+    query = 'SELECT ' + ', '.join(requestedColumns) + ' FROM opoid_dashboard_with_age WHERE rate NOT LIKE "N/A" '
     print query
     whereAdded = False
     for filt in fieldFilters[:len(fieldFilters) - 1]:
@@ -105,5 +105,21 @@ def searchGroup():
     for result in results:
         rows.append({header: resVal for header, resVal in zip(requestedColumns, result)})
     return jsonify(rows)
+
+
+@app.route('/randomLocs', methods=['GET'])
+def randomLocs():
+    cur = myConnection.cursor()
+    cur.execute('SELECT lat, lon FROM fuck_ems_mock_data ORDER BY RAND() LIMIT 50')
+    myConnection.commit()
+    try:
+        results = cur.fetchall()
+        print 'works'
+        return jsonify([{"lat": x[0], "lon": x[1]} for x in results])
+    except Exception as e:
+        print 'no'
+        return e.message
+
+
 if __name__ == "__main__":
     app.run(host='localhost')
