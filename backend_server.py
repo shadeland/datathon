@@ -11,8 +11,10 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 from flask_cors import CORS
+
 app = Flask(__name__)
 CORS(app)
+
 
 @app.route('/options', methods=['GET'])
 def options():
@@ -28,36 +30,21 @@ def options():
         print 'no'
         return e.message
 
-#Use this function, example link http://localhost:5000/search?fieldFilters={"name":"year","type":"number","value":2011};{"name":"type","type":"text","value":"ED%20Heroin%20Overdose"};{"name":"locality"}&requestedColumns=locality, COUNT(*)
+
+# Use this function, example link http://localhost:5000/search?fieldFilters={"name":"year","type":"number","value":2011};{"name":"type","type":"text","value":"ED%20Heroin%20Overdose"};{"name":"locality"}&requestedColumns=locality, COUNT(*)
 @app.route('/search', methods=['GET'])
 def search():
     cur = myConnection.cursor()
-    import json
-    fieldFilters = [json.loads(x) for x in request.args['fieldFilters'].split(";")]
     requestedColumns = request.args['requestedColumns'].split(",")
-    query = 'SELECT ' + ', '.join(requestedColumns) + ' FROM opoid_dashboard_with_age WHERE rate NOT LIKE "N/A" '
-    print query
-    whereAdded = False
-    for filt in fieldFilters[:len(fieldFilters) - 1]:
-        if not whereAdded:
-            query += "WHERE "
-            whereAdded = True
-        query += filt['name']
-        if filt['type'] == 'number':
-            query += ' = ' + filt['value'] + ' AND '
-        elif filt['type'] == 'text':
-            query += ' LIKE "' + filt['value'] + '" AND '
-    # Final filt without conditional
-    filt = fieldFilters[-1]
-    if not whereAdded:
-        query += "WHERE "
-        whereAdded = True
-    query += filt['name']
-    if filt['type'] == 'number':
-        query += ' = ' + str(filt['value'])
-    elif filt['type'] == 'text':
-        query += ' LIKE "' + filt['value'] + '"'
-    # Final filt without conditional
+    query = 'SELECT ' + ', '.join(
+        requestedColumns) + ' FROM opoid_dashboard_with_age WHERE rate NOT LIKE \"N/A\" AND rate NOT LIKE \"0\" '
+    if request.args.get('year'):
+        query += " AND year = " + request.args['year']
+    if request.args.get('locality'):
+        query += " AND locality LIKE " + request.args['locality']
+    if request.args.get('type'):
+        query += " AND type LIKE " + request.args['type']
+
     print query
     cur.execute(query)
     myConnection.commit()
@@ -66,6 +53,7 @@ def search():
     for result in results:
         rows.append({header: resVal for header, resVal in zip(requestedColumns, result)})
     return jsonify(rows)
+
 
 @app.route('/searchGroup', methods=['GET'])
 def searchGroup():
