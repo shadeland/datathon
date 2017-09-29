@@ -12,7 +12,7 @@ module.exports = {
        
    		};
    
-   		const encodedURI = window.encodeURI('http://localhost:5000/search?year=2016&requestedColumns=locality,type,rate');
+   		const encodedURI = window.encodeURI('http://api.datathon.truservice.info/search?year=2016&requestedColumns=locality,type,rate');
    		return axios.get(encodedURI,{},config).then((response) => {
 
    			return response.data
@@ -26,7 +26,7 @@ module.exports = {
        
    		};
    
-   		const encodedURI = window.encodeURI('http://localhost:5000/getCenters');
+   		const encodedURI = window.encodeURI('http://api.datathon.truservice.info/getCenters');
    		return axios.get(encodedURI).then((response) => {
 
    			return response.data
