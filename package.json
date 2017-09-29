@@ -36,6 +36,7 @@
   "scripts": {
     "startserver": " webpack-dev-server  --host $IP --port $PORT  --hot --inline",
     "start": " webpack-dev-server    --hot --inline",
+    "build": "webpack --config webpack.pro.config.js --progress --profile --colors",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

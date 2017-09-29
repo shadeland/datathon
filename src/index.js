@@ -8,14 +8,22 @@ var L = require('leaflet');
 var esri = require('esri-leaflet');
 var geocoding = require('esri-leaflet-geocoder');
 var utils = require('./utils')
-var topo = require('./vajson.js')
+// var topo = require('./vajson.js')
 var chroma = require('chroma-js')
 
+var fatality;
 // var axios = require('axios');
 // converting topo json to 
-console.log(topo)
+// console.log(topo)
 utils.fetchFatalities().then((data)=>{
+
+	fatality = data
 	console.log(data)
+
+
+	utils.fetchTopo().then((topodata) => {
+	addCountyTopo(topodata)
+})
 })
 
 
@@ -51,27 +59,27 @@ var map = L.map('vamap').setView([35.505, -78.09], 7);
 esri.basemapLayer('Gray').addTo(map);
 
 
-// utils.fetchTopo().then((data) => {
-// 	addCountyTopo(data)
-// })
-addCountyTopo(topo)
+
+
 
 // var topoLayer = new L.TopoJSON();
 var    colorScale = chroma
-.scale(['#D5E3FF', '#003171'])
-.domain([0,1]);
+.scale(['#FFFFff', '#f03b20'])
+.domain([0,150]);
 
 function handleLayer(layer){
 	console.log(layer)
-	var randomValue = Math.random(),
-	fillColor = colorScale(randomValue).hex();
+	var countryName = layer.feature.properties.name;
+	var rateValue = getRate(countryName,fatality)
+	console.log(rateValue)
+	fillColor = colorScale(rateValue).hex();
 
 	layer.setStyle({
 		fillColor : fillColor,
-		fillOpacity: 1,
+		fillOpacity: 0.75,
 		color:'#555',
 		weight:1,
-		opacity:1
+		opacity:0.5
 	});
 	layer.on({
 		mouseover : enterLayer,
@@ -99,11 +107,20 @@ function leaveLayer(){
 }
 function addCountyTopo (topoData){
 	// console.log(topoData)
-	L.geoJson(topoData).addTo(map);
+	topoLayer = L.geoJson(topoData)
+	topoLayer.addTo(map);
 	// topoLayer.addTo(map);
 	topoLayer.eachLayer(handleLayer);
 }
 
+function getRate(county,data){
+	console.log(county)
+	for(var i = 0; i < data.length ; ++i){
+		if (county.search(data[i].locality) != -1){
+			return(data[i].rate)
+		}
+	}
+}
 // addCountyTopo(topo)
 
 
