@@ -55,6 +55,21 @@ def search():
     return jsonify(rows)
 
 
+@app.route('/treatment_facilities', methods=['GET'])
+def treatment_facilities():
+    cur = myConnection.cursor()
+    requestedColumns = request.args['requestedColumns'].split(",")
+    query = 'SELECT name1, latitude, longitude FROM treatment_facilities'
+
+    cur.execute(query)
+    myConnection.commit()
+    results = cur.fetchall()
+    rows = []
+    for result in results:
+        rows.append({header: resVal for header, resVal in zip(requestedColumns, result)})
+    return jsonify(rows)
+
+
 @app.route('/searchGroup', methods=['GET'])
 def searchGroup():
     cur = myConnection.cursor()
@@ -108,6 +123,19 @@ def randomLocs():
         print 'no'
         return e.message
 
+
+@app.route('/getCenters', methods=['GET'])
+def getCenters():
+    cur = myConnection.cursor()
+    cur.execute('SELECT lat, lon, name FROM treatment_centers ORDER BY RAND()')
+    myConnection.commit()
+    try:
+        results = cur.fetchall()
+        print 'works'
+        return jsonify([{"lat": float(x[0]), "lon": float(x[1]), "name": x[2]} for x in results])
+    except Exception as e:
+        print 'no'
+        return e.message
 
 if __name__ == "__main__":
     app.run(host='localhost')
