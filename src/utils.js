@@ -19,6 +19,20 @@ module.exports = {
 			// return response.data.items
 		})
 	},
+	fetchCenters : function(){
+		
+		var config = {
+			
+       
+   		};
+   
+   		const encodedURI = window.encodeURI('http://localhost:5000/getCenters');
+   		return axios.get(encodedURI).then((response) => {
+
+   			return response.data
+			// return response.data.items
+		})
+	},
 	fetchTopo : function(language,callback){
 		
 		// var config = {

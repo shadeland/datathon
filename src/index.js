@@ -27,6 +27,18 @@ utils.fetchFatalities().then((data)=>{
 })
 
 
+utils.fetchCenters().then((data)=>{
+
+	for(var i = 0; i<data.length; ++i){
+		addCenter(data[i])
+	}
+
+})
+
+function addCenter(center){
+	L.marker([center.lat,center.lon]).addTo(map);
+}
+
 
 // L.TopoJSON = L.GeoJSON.extend({
 // 	addData: function(jsonData){
