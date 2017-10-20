@@ -5,4 +5,4 @@ web:
   volumes:
    - .:/code
   links:
-    - test-mysql
+    - test-mysql:db
