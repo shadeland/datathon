@@ -4,3 +4,5 @@ web:
    - "5000:5000"
   volumes:
    - .:/code
+  links:
+    - test-mysql
