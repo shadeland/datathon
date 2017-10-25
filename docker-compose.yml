@@ -3,6 +3,6 @@ web:
   ports:
    - "5000:5000"
   volumes:
-   - .:/code
+   - ./web/app:/app/app
   external_links:
     - test-mysql:db

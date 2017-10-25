@@ -1,6 +1,6 @@
-hostname = 'localhost'
+hostname = 'db'
 username = 'root'
-password = ''
+password = 'mamal65'
 database = 'datathon'
 
 import pymysql
