@@ -5,4 +5,9 @@ web:
   volumes:
    - ./web/app:/app/app
   external_links:
-    - test-mysql:db
+    - test-mysql:db 
+  environment:
+    - DBUSER= root
+    - DBPASS= mamal65
+    - DBNAME= datathon
+    - DBHOSTNAME= db
