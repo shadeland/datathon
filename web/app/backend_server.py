@@ -1,4 +1,4 @@
-hostname = 'db'
+hostname = 'localhost'
 username = 'root'
 password = 'mamal65'
 database = 'datathon'
